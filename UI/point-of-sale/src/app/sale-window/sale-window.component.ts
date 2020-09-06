@@ -1,26 +1,8 @@
 import { Component, OnInit, Input, ViewChild, ChangeDetectorRef } from '@angular/core';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '@angular/cdk/drag-drop';
 import { MatTable } from '@angular/material/table';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H' },
-  { position: 2, name: 'Helium', weight: 4.0026, symbol: 'He' },
-  { position: 3, name: 'Lithium', weight: 6.941, symbol: 'Li' },
-  { position: 4, name: 'Beryllium', weight: 9.0122, symbol: 'Be' },
-  { position: 5, name: 'Boron', weight: 10.811, symbol: 'B' },
-  { position: 6, name: 'Carbon', weight: 12.0107, symbol: 'C' },
-  { position: 7, name: 'Nitrogen', weight: 14.0067, symbol: 'N' },
-  { position: 8, name: 'Oxygen', weight: 15.9994, symbol: 'O' },
-  { position: 9, name: 'Fluorine', weight: 18.9984, symbol: 'F' },
-  { position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne' },
-];
+import { MatTabGroup } from '@angular/material/tabs';
+import { FormControl, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-sale-window',
@@ -31,67 +13,118 @@ export class SaleWindowComponent implements OnInit {
 
   @ViewChild('productTable') productTable: MatTable<any>;
   displayedColumns: string[] = ['position'];
-  dataSource = ELEMENT_DATA;
+  categories: any[] = [
+    {
+      sNo: 0,
+      category: "All"
+    },
+    {
+      sNo: 1,
+      category: "Computers"
+    }, {
+      sNo: 2,
+      category: "Fruits"
+    }, {
+      sNo: 3,
+      category: "Clothing"
+    },
+  ]
+  searchTerm = new FormControl('');
 
-  constructor(private changeDetectorRefs: ChangeDetectorRef) { }
+  constructor() { }
 
   ngOnInit(): void {
-
+    this.getSearchArray();
+    this.filteredProducts = this.done;
   }
 
   todo = [
-    {
-      sno: 1,
-      task: 'Get to work'
-    },
-    {
-      sno: 2,
-      task: 'Pick up groceries'
-    },
-    {
-      sno: 3,
-      task: 'Go home'
-    },
-    {
-      sno: 4,
-      task: 'Fall asleep'
-    }
+
   ];
 
   done = [
     {
+      sno: 1,
+      category: 'pc',
+      quantity: 2,
+      task: 'Get to work'
+    },
+    {
+      sno: 2,
+      category: 'pc',
+      quantity: 2,
+      task: 'Pick up groceries'
+    },
+    {
+      sno: 3,
+      category: 'notpc',
+      quantity: 2,
+      task: 'Go home'
+    },
+    {
+      sno: 4,
+      category: 'notpc',
+      quantity: 2,
+      task: 'Fall asleep'
+    },
+    {
       sno: 5,
+      category: 'notpc',
+      quantity: 2,
       task: 'Get up'
     },
     {
       sno: 6,
+      category: 'pc',
+      quantity: 2,
       task: 'Brush teeth'
     },
     {
       sno: 7,
+      category: 'notpc',
+      quantity: 2,
       task: 'Take a shower'
     },
     {
       sno: 8,
+      category: 'pc',
+      quantity: 2,
       task: 'Check e-mail'
     },
     {
       sno: 9,
+      category: 'pc',
+      quantity: 2,
       task: 'Walk dog'
     },
   ];
 
+  filteredProducts = [];
+
+  getSearchArray() {
+    this.searchTerm.valueChanges
+      .subscribe(
+        value => {
+          let newProductList = [];
+          newProductList = this.done.filter(product => {
+            return product.category.includes(value);
+          });
+          this.filteredProducts = newProductList;
+        }
+      );
+  }
+
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
+      console.log("1st if");
+
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      transferArrayItem(event.previousContainer.data,
+      console.log(event.previousContainer.data[event.previousIndex]['quantity']);
+      copyArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
         event.currentIndex);
     }
-
   }
-
-
 }

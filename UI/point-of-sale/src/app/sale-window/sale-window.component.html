@@ -11,21 +11,53 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table> -->
-    <div cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo" [cdkDropListConnectedTo]="[doneList]"
-        class="product-list" (cdkDropListDropped)="drop($event)">
+    <div class="table-card" cdkDropList #todoList="cdkDropList" [cdkDropListData]="todo" class="product-list"
+        (cdkDropListDropped)="drop($event)">
         <table class="product mat-elevation-z8">
-            <tr *ngFor="let item of todo">
-                <td>{{item}}
-                </td>
-            </tr>
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of todo">
+                    <td>{{item.sno}}
+                    </td>
+                    <td>{{item.task}}
+                    </td>
+                    <td>{{item.sno}}
+                    </td>
+                    <td>{{item.sno}}
+                    </td>
+                </tr>
+            </tbody>
         </table>
         <!-- <div class="example-box" *ngFor="let item of todo">{{item}}</div> -->
     </div>
 
 </div>
 <div class="product-card">
-    <div cdkDropList #doneList="cdkDropList" [cdkDropListData]="done" [cdkDropListConnectedTo]="[todoList]"
+    <mat-tab-group style="width: 100%" #productList>
+        <mat-tab class="view-card" *ngFor="let tab of categories" [label]="tab['category']">
+            <mat-form-field class="search-bar">
+                <mat-label>Search Products</mat-label>
+                <input [formControl]="searchTerm" type="search" matInput placeholder="Start Typing">
+                <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <div cdkDropList #doneList="cdkDropList" cdkDropListOrientation="horizontal"
+                [cdkDropListData]="filteredProducts" [cdkDropListConnectedTo]="[todoList]" class="example-list"
+                (cdkDropListDropped)="drop($event)">
+                <mat-card cdkDrag class="item" *ngFor="let product of filteredProducts">
+                    Hey
+                </mat-card>
+            </div>
+        </mat-tab>
+    </mat-tab-group>
+    <!-- <div cdkDropList #doneList="cdkDropList" cdkDropListOrientation="horizontal" [cdkDropListData]="filteredProducts" [cdkDropListConnectedTo]="[todoList]"
         class="example-list" (cdkDropListDropped)="drop($event)">
-        <div class="example-box" *ngFor="let item of done" cdkDrag>{{item}}</div>
-    </div>
+        <div class="example-box" *ngFor="let item of done" cdkDrag>{{item|json}}</div> 
+    </div>-->
 </div>

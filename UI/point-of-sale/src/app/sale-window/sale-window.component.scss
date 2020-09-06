@@ -3,19 +3,47 @@
     float: left;
     height: 100%;
     width: 40%;
-    background-color: lightgrey;
+}
+
+.table-card {
+    background-color: rgb(218, 32, 32);
+}
+
+tr,
+td,
+th {
+    text-align: center;
 }
 
 .product-card {
     display: flex;
     float: right;
     height: 100%;
-    width: 60%;
-    background-color: lightgreen;
+    width: 57%;
+    padding: 0 1% 0 1%;
+    background-color: rgba(211, 211, 211, 0.425);
+}
+
+.view-card {
+    height: 100%;
 }
 
 .product {
-width: 100%;
+    width: 95%;
+    padding: 5% 2%;
+    margin: 2% 1% 1% 2%;
+}
+
+.item {
+    min-width: 60px;
+    min-height: 60px;
+    float: left;
+    margin: 1% 2% 2% 2%;
+}
+
+.search-bar {
+    margin-top: 1%;
+    width: 100%;
 }
 
 .product-list {
