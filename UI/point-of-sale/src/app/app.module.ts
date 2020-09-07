@@ -9,6 +9,9 @@ import { MaterialModule } from './material.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { SaleWindowComponent } from './sale-window/sale-window.component';
 
+import { NetworkService } from './services/network.service'
+import { HttpClientModule } from '@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -19,10 +22,11 @@ import { SaleWindowComponent } from './sale-window/sale-window.component';
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     MaterialModule,
     ReactiveFormsModule
   ],
-  providers: [],
+  providers: [NetworkService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

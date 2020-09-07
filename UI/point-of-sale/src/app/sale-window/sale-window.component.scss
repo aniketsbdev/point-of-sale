@@ -6,6 +6,7 @@
 }
 
 .table-card {
+    float: left;
     background-color: rgb(218, 32, 32);
 }
 
@@ -56,12 +57,24 @@ th {
     width: 100%;
 }
 
+.product-table {
+    overflow: scroll;
+}
+
+.calculation-table {
+    align-self: flex-end;
+}
+
 .example-container {
     width: 400px;
     max-width: 100%;
     margin: 0 25px 25px 0;
     display: inline-block;
     vertical-align: top;
+}
+
+.calculation-table {
+    margin-bottom: 2%;
 }
 
 .example-list {

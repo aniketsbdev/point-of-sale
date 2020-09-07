@@ -3,6 +3,8 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem, copyArrayItem } from '
 import { MatTable } from '@angular/material/table';
 import { MatTabGroup } from '@angular/material/tabs';
 import { FormControl, Validators } from '@angular/forms';
+import { NetworkService } from '../services/network.service';
+import { SelectionChange } from '@angular/cdk/collections';
 
 @Component({
   selector: 'app-sale-window',
@@ -12,6 +14,7 @@ import { FormControl, Validators } from '@angular/forms';
 export class SaleWindowComponent implements OnInit {
 
   @ViewChild('productTable') productTable: MatTable<any>;
+  @ViewChild(MatTabGroup) tabGroup: MatTabGroup;
   displayedColumns: string[] = ['position'];
   categories: any[] = [
     {
@@ -30,84 +33,71 @@ export class SaleWindowComponent implements OnInit {
     },
   ]
   searchTerm = new FormControl('');
-
-  constructor() { }
+  productList: any;
+  dataLoaded = false;
+  constructor(private network: NetworkService) { }
 
   ngOnInit(): void {
-    this.getSearchArray();
-    this.filteredProducts = this.done;
+    this.network.getAllProducts().subscribe(productList => {
+      this.productList = productList['data'];
+      console.log(productList['data'], this.productList);
+      this.dataLoaded = true;
+      this.getSearchArray();
+      this.filteredProducts = this.productList;
+    })
   }
 
   todo = [
-
   ];
 
-  done = [
-    {
-      sno: 1,
-      category: 'pc',
-      quantity: 2,
-      task: 'Get to work'
-    },
-    {
-      sno: 2,
-      category: 'pc',
-      quantity: 2,
-      task: 'Pick up groceries'
-    },
-    {
-      sno: 3,
-      category: 'notpc',
-      quantity: 2,
-      task: 'Go home'
-    },
-    {
-      sno: 4,
-      category: 'notpc',
-      quantity: 2,
-      task: 'Fall asleep'
-    },
-    {
-      sno: 5,
-      category: 'notpc',
-      quantity: 2,
-      task: 'Get up'
-    },
-    {
-      sno: 6,
-      category: 'pc',
-      quantity: 2,
-      task: 'Brush teeth'
-    },
-    {
-      sno: 7,
-      category: 'notpc',
-      quantity: 2,
-      task: 'Take a shower'
-    },
-    {
-      sno: 8,
-      category: 'pc',
-      quantity: 2,
-      task: 'Check e-mail'
-    },
-    {
-      sno: 9,
-      category: 'pc',
-      quantity: 2,
-      task: 'Walk dog'
-    },
-  ];
+  changeCategory(event: any) {
+    console.log(event);
+    let currentList = [];
+    if (event.index == 0) {
+      currentList = this.productList;
+    } else if (event.index == 1) {
+      currentList = this.productList.filter(product => {
+        return product.category == "computers"
+      });
+    } else if (event.index == 2) {
+      currentList = this.productList.filter(product => {
+        return product.category == "fruits"
+      });
+    } else if (event.index == 3) {
+      currentList = this.productList.filter(product => {
+        return product.category == "clothing"
+      });
+    }
+    this.filteredProducts = currentList;
+  }
 
   filteredProducts = [];
 
   getSearchArray() {
+
     this.searchTerm.valueChanges
       .subscribe(
         value => {
+          console.log(this.tabGroup.selectedIndex);
           let newProductList = [];
-          newProductList = this.done.filter(product => {
-            return product.category.includes(value);
+          if (this.tabGroup.selectedIndex == 0) {
+            newProductList = this.productList;
+          } else if (this.tabGroup.selectedIndex == 1) {
+            newProductList = this.productList.filter(product => {
+              return product.category == "computers"
+            });
+          } else if (this.tabGroup.selectedIndex == 2) {
+            newProductList = this.productList.filter(product => {
+              return product.category == "fruits"
+            });
+          } else if (this.tabGroup.selectedIndex == 3) {
+            newProductList = this.productList.filter(product => {
+              return product.category == "clothing"
+            });
+          }
+          this.filteredProducts = newProductList;
+          newProductList = this.filteredProducts.filter(product => {
+            return product.productName.toLowerCase().includes(value.toLowerCase());
           });
           this.filteredProducts = newProductList;
         }
@@ -120,7 +110,7 @@ export class SaleWindowComponent implements OnInit {
 
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      console.log(event.previousContainer.data[event.previousIndex]['quantity']);
+      console.log(event.previousContainer.data[event.previousIndex], event.previousIndex);
       copyArrayItem(event.previousContainer.data,
         event.container.data,
         event.previousIndex,
